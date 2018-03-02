@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 /**
+ * (c) 2018 Off JustOff <Off.Just.Off@gmail.com>
  * (c) 2013 Rob Wu <rob@robwu.nl>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -85,7 +86,7 @@ function build(setup, output_root_dir) {
     rm('lib/beautify/jsbeautifier/get-jsb.sh');
 }
 
-function lintDir(dest_dir) {
+function lintDir(dest_dir, allowed_files = ALLOWED_FILES) {
     var warningCount = 0;
     find(dest_dir).forEach(function(filepath) {
         if (/\/\.[^\/]*$/.test(filepath)) {
@@ -102,7 +103,7 @@ function lintDir(dest_dir) {
             echo(unprocessed);
             ++warningCount;
         }
-        if (!ALLOWED_FILES.some(function(p) {
+        if (!allowed_files.some(function(p) {
             return p.test ? p.test(filepath) : filepath.endsWith(p);
         })) {
             echo('WARNING: Unrecognized file: ' + filepath);
@@ -252,11 +253,15 @@ target.xul = function() {
       fname += '-' + grep(re, 'install.rdf').match(re)[1];
     } catch(e) {}
     exec('7z a ../' + fname + '.xpi * -tzip');
-    ALLOWED_FILES.push(
+    var XUL_ALLOWED_FILES = [
       'chrome.manifest',
       'install.rdf',
       'options.xul',
       'MatchPattern.jsm',
-    );
-    lintDir(XUL_BUILD_DIR);
+      '.css',
+      '.html',
+      '.js',
+      '.png',
+    ];
+    lintDir(XUL_BUILD_DIR, XUL_ALLOWED_FILES);
 };
