@@ -13,8 +13,9 @@ const apmo_match_pattern = '*://addons.palemoon.org/?component=download*';
 
 let styleSheetService = Cc["@mozilla.org/content/style-sheet-service;1"].getService(Ci.nsIStyleSheetService);
 let styleSheetURI = Services.io.newURI("chrome://esrc-explorer/skin/style.css", null, null);
+let navigator = {userAgent: Cc["@mozilla.org/network/protocol;1?name=http"].getService(Ci.nsIHttpProtocolHandler).userAgent};
 
-let gWindowListener, navigator;
+let gWindowListener;
 
 function ESrcExplorer(aWindow) {
   this.init(aWindow);
@@ -203,7 +204,7 @@ ESrcExplorer.prototype = {
 
 function BrowserWindowObserver(aHandlers) {
   this.handlers = aHandlers;
- }
+}
 
 BrowserWindowObserver.prototype = {
   observe: function(aSubject, aTopic, aData) {
@@ -226,7 +227,6 @@ BrowserWindowObserver.prototype = {
 };
 
 function browserWindowStartup(aWindow) {
-  navigator = aWindow.navigator;
   aWindow.gBrowser || aWindow.getBrowser();
   aWindow.gBrowser.ESrcExplorer = new ESrcExplorer(aWindow);
 }
@@ -281,7 +281,6 @@ function shutdown(aData, aReason) {
 
   Services.ww.unregisterNotification(gWindowListener);
   gWindowListener = null;
-  navigator = null;
 
   let winenu = Services.wm.getEnumerator("navigator:browser");
   while (winenu.hasMoreElements()) {
