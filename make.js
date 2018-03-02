@@ -13,7 +13,7 @@
 require('shelljs/make');
 var builder = require('./external/builder');
 
-
+var REPO = 'https://github.com/JustOff/esrc-explorer';
 var ROOT_DIR = __dirname + '/';
 var BUILD_DIR = ROOT_DIR + 'dist/';
 var SRC_DIR = ROOT_DIR + 'src/';
@@ -46,6 +46,7 @@ function getBuildConfig(options) {
             OPERA: false,
             WEB: false,
             XUL: false,
+            REPO: REPO,
             VERSION: getVersionString(),
         },
         mkdirs: [
@@ -192,6 +193,7 @@ target.web = function() {
             OPERA: false,
             XUL: false,
             WEB: true,
+            REPO: REPO,
             VERSION: getVersionString(),
         },
         copy: [
@@ -222,6 +224,7 @@ target.xul = function() {
             OPERA: false,
             WEB: false,
             XUL: true,
+            REPO: REPO,
             VERSION: getVersionString(),
         },
         copy: [
