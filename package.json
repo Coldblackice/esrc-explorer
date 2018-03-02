@@ -1,17 +1,20 @@
 {
-  "name": "crxviewer",
+  "name": "esrc-explorer",
   "version": "0.0.0",
-  "description": "Tools and dependencies to build CRX viewer.",
+  "description": "Tools and dependencies to build CRX viewer and Extension Source Explorer",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Rob--W/crxviewer.git"
+    "url": "https://github.com/JustOff/esrc-explorer"
   },
-  "author": "Rob Wu <rob@robwu.nl> (https://robwu.nl/)",
+  "author": "Off JustOff <Off.Just.Off@gmail.com>",
+  "contributors": [
+    "Rob Wu <rob@robwu.nl> (https://robwu.nl/)"
+  ],
   "license": "MPL-2.0",
   "bugs": {
-    "url": "https://github.com/Rob--W/crxviewer/issues"
+    "url": "https://github.com/JustOff/esrc-explorer/issues"
   },
-  "homepage": "https://github.com/Rob--W/crxviewer#readme",
+  "homepage": "https://github.com/JustOff/esrc-explorer#readme",
   "private": true,
   "devDependencies": {
     "less": "^2.7.1",
