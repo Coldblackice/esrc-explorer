@@ -244,9 +244,14 @@ target.xul = function() {
     cd(XUL_BUILD_DIR);
     mkdir('content');
     mv('*.*', 'lib', 'content');
-    cp('-r', XUL_SRC_DIR + '/*', XUL_BUILD_DIR);
-    rm('-f', '../crxviewer_xul.zip');
-    exec('7z a ../crxviewer_xul.zip * -tzip');
+    cp('-R', XUL_SRC_DIR + '*', XUL_BUILD_DIR);
+    rm('-f', '../esrc-explorer*.xpi');
+    var re = /<em:version>(.*?)<\/em:version>/;
+    var fname = 'esrc-explorer';
+    try {
+      fname += '-' + grep(re, 'install.rdf').match(re)[1];
+    } catch(e) {}
+    exec('7z a ../' + fname + '.xpi * -tzip');
     ALLOWED_FILES.push(
       'chrome.manifest',
       'install.rdf',
