@@ -156,7 +156,7 @@ ESrcExplorer.prototype = {
     this.openExplorerOrSave(citem.getAttribute("data-url"), aEvent.ctrlKey || aEvent.metaKey);
   },
 
-  popupShowing: function() {
+  popupShowing: function(aEvent) {
     let mrw = Services.wm.getMostRecentWindow("navigator:browser");
     let citem = mrw.document.getElementById("esrc-explorer-item");
     citem.hidden = true;
@@ -169,6 +169,10 @@ ESrcExplorer.prototype = {
       } else if (mrw.gBrowser.ESrcExplorer.targetUrlMatchPatternAMO.matches(srcURI)) {
         citem.setAttribute("data-url", mrw.gContextMenu.linkURL);
         citem.setAttribute("label", "Explore linked extension source (latest approved version)");
+        citem.hidden = false;
+      } else if (aEvent.ctrlKey || aEvent.metaKey) {
+        citem.setAttribute("data-url", mrw.gContextMenu.linkURL);
+        citem.setAttribute("label", "Explore linked file source");
         citem.hidden = false;
       }
     }
