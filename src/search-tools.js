@@ -1,4 +1,5 @@
 /**
+ * (c) 2018 Off JustOff <Off.Just.Off@gmail.com>
  * (c) 2016 Rob Wu <rob@robwu.nl>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -51,22 +52,22 @@ function binarySearch(array, evaluate, useCeiling = false) {
 }
 
 // A model that processes search queries and displays the result.
-class SearchEngineLogic {
-    /**
-     * @param {string} text - The text to search through
-     */
-    constructor(text) {
-        this.text = text;
+/**
+ * @param {string} text - The text to search through
+ */
+function SearchEngineLogic(text) {
+    this.text = text;
 
-        this.regex = null;
-        this.currentQuery = null;
-        this.currentResults = [];
+    this.regex = null;
+    this.currentQuery = null;
+    this.currentResults = [];
 
-        this.currentIndex = -1;
-        this.currentLine = -1;
-        this.currentColumn = -1;
-    }
+    this.currentIndex = -1;
+    this.currentLine = -1;
+    this.currentColumn = -1;
+}
 
+SearchEngineLogic.prototype = {
     /**
      * List of integer offsets. Each index refers to a line, and the
      * corresponding value is the offset in `this.text` where the line starts.
@@ -84,7 +85,7 @@ class SearchEngineLogic {
         }
         Object.defineProperty(this, 'lineOffsets', {value});
         return value;
-    }
+    },
 
     /**
      * Get the text between `lineStart:columnStart` and `lineEnd:columnEnd`.
@@ -97,13 +98,13 @@ class SearchEngineLogic {
      * @param {number} columnEnd - If `lineStart` is the same as `lineEnd`, then
      *    `columnEnd` must be at least as large as `columnStart`.
      */
-    getText(lineStart, columnStart, lineEnd, columnEnd) {
+    getText: function(lineStart, columnStart, lineEnd, columnEnd) {
         let textStartIndex = this.lineOffsets[lineStart] + columnStart;
         let textEndIndex = this.lineOffsets[lineEnd] + columnEnd;
         return this.text.substring(textStartIndex, textEndIndex);
-    }
+    },
 
-    findPrev() {
+    findPrev: function() {
         // Backwards search looks for the query after the current position,
         // and then returns the result before it.
         // This means that if one looks for the last result starting from the
@@ -131,9 +132,9 @@ class SearchEngineLogic {
             this.findAll();
         }
         return this.setAndReturnResult(this.currentResults.length - 1);
-    }
+    },
 
-    findNext() {
+    findNext: function() {
         let i = this.findIndex(result =>
             result.lineStart > this.currentLine ||
             (result.lineStart === this.currentLine &&
@@ -147,13 +148,13 @@ class SearchEngineLogic {
         // Wrap around.
         // TODO: Show notification that the search wrapped around?
         return this.setAndReturnResult(0);
-    }
+    },
 
     /**
      * @returns {object[]} A direct reference to the internal result array.
      *    Do not mutate this return value.
      */
-    findAll() {
+    findAll: function() {
         if (!this.currentQuery) {
             this.currentQuery = this.runQuery();
         }
@@ -162,7 +163,7 @@ class SearchEngineLogic {
         }
         this.currentQuery.isAtEndOfSearch = true;
         return this.currentResults;
-    }
+    },
 
     /**
      * Get the lower bound of the number of results.
@@ -173,7 +174,7 @@ class SearchEngineLogic {
      *    `limitTo` if the results have already been generated before this call,
      *    for instance by a call to `findPrev`.
      */
-    getMinimumResultCount(limitTo = 100) {
+    getMinimumResultCount: function(limitTo = 100) {
         if (!this.currentQuery) {
             this.currentQuery = this.runQuery();
         }
@@ -188,11 +189,11 @@ class SearchEngineLogic {
             }
         }
         return this.currentResults.length;
-    }
+    },
 
-    hasFoundAllResults() {
+    hasFoundAllResults: function() {
         return !!(this.currentQuery && this.currentQuery.isAtEndOfSearch);
-    }
+    },
 
     /**
      * Select the i-th result and save its position so that the next call to
@@ -203,12 +204,12 @@ class SearchEngineLogic {
      *    mutated, and is guaranteed to have a '==='-identity to previously
      *    returned results until the query is reset via `setQuery`.
      */
-    setAndReturnResult(i) {
+    setAndReturnResult: function(i) {
         let result = this.currentResults[i];
         this.currentIndex = i;
         this.setCurrentPosition(result.lineStart, result.columnStart);
         return result;
-    }
+    },
 
     /**
      * Set the position to use for the next findNext / findPrev call.
@@ -216,10 +217,10 @@ class SearchEngineLogic {
      * @param {number} line - The line number (0-based).
      * @param {number} column - The column number (0-based).
      */
-    setCurrentPosition(line, column) {
+    setCurrentPosition: function(line, column) {
         this.currentLine = line;
         this.currentColumn = column;
-    }
+    },
 
     /**
      * Iterate forwards through the results, until the `accept` function returns
@@ -228,7 +229,7 @@ class SearchEngineLogic {
      * @param {function} accept - Whether to return the result.
      * @returns {number} The index of the accepted result, -1 if none.
      */
-    findIndex(accept) {
+    findIndex: function(accept) {
         if (!this.currentQuery) {
             this.currentQuery = this.runQuery();
         }
@@ -250,14 +251,14 @@ class SearchEngineLogic {
         }
         this.currentQuery.isAtEndOfSearch = true;
         return -1;
-    }
+    },
 
     /**
      * An iterator that yields {lineStart, columnStart, lineEnd, columnEnd}.
      * The line and columns both start at 0. '\n' terminates a line and is
      * considered part of the line that it terminates.
      */
-    *runQuery() {
+    runQuery: function*() {
         if (this.regex === null) {
             return;
         }
@@ -290,12 +291,12 @@ class SearchEngineLogic {
                 columnEnd,
             };
         }
-    }
+    },
 
     /**
      * @param {RegExp} [searchterm]
      */
-    setQuery(searchterm = null) {
+    setQuery: function(searchterm = null) {
         if (searchterm) {
             let flags = searchterm.ignoreCase ? 'ig' : 'g';
             this.regex = new RegExp(searchterm.source, flags);
@@ -307,37 +308,37 @@ class SearchEngineLogic {
     }
 }
 
-class SearchEngineElement {
-    /**
-     * @param {string} text - The text to search through
-     */
-    constructor(text) {
-        // Strip NULL bytes because the browser doesn't render them. Including
-        // them would result in a mismatch between the column numbers and the
-        // actual rendered text, and consequently reduce the accuracy of the
-        // _getResultCoords method.
-        text = text.replace(/\x00/g, '');
-        this.logic = new SearchEngineLogic(text);
-        this.element = null;
-        this.scrollableElement = null;
-        this.connected = false;
+/**
+ * @param {string} text - The text to search through
+ */
+function SearchEngineElement(text) {
+    // Strip NULL bytes because the browser doesn't render them. Including
+    // them would result in a mismatch between the column numbers and the
+    // actual rendered text, and consequently reduce the accuracy of the
+    // _getResultCoords method.
+    text = text.replace(/\x00/g, '');
+    this.logic = new SearchEngineLogic(text);
+    this.element = null;
+    this.scrollableElement = null;
+    this.connected = false;
 
-        this.currentSearchTermSerialized = null;
-        this.currentResult = null;
-        // Container for rendering highlights.
-        this.svgRoot = null;
-        this.svgRootWrapper = null;
-        // Set of already-rendered highlights.
-        this.highlightedResults = new Set();
-        this.isHighlighting = false;
+    this.currentSearchTermSerialized = null;
+    this.currentResult = null;
+    // Container for rendering highlights.
+    this.svgRoot = null;
+    this.svgRootWrapper = null;
+    // Set of already-rendered highlights.
+    this.highlightedResults = new Set();
+    this.isHighlighting = false;
 
-        this._ondblclick_element = this._ondblclick_element.bind(this);
-        this._onscroll_scrollableElement =
-            this._debounce(this._onscroll_scrollableElement);
-        this._onresize_window = this._debounce(this._onresize_window);
-    }
+    this._ondblclick_element = this._ondblclick_element.bind(this);
+    this._onscroll_scrollableElement =
+        this._debounce(this._onscroll_scrollableElement);
+    this._onresize_window = this._debounce(this._onresize_window);
+}
 
-    destroy() {
+SearchEngineElement.prototype = {
+    destroy: function() {
         this.currentSearchTermSerialized = null;
         this._removeSVGRoot();
         this.hideCurrentResult();
@@ -345,13 +346,13 @@ class SearchEngineElement {
         this.disconnect();
         this.element = null;
         this.scrollableElement = null;
-    }
+    },
 
     /**
      * Activate the search engine integration in the document.
      * `setElement` must have been called before this call.
      */
-    connect() {
+    connect: function() {
         this.element.addEventListener(
             'dblclick', this._ondblclick_element, true);
         this.scrollableElement.addEventListener(
@@ -359,12 +360,12 @@ class SearchEngineElement {
         this.scrollableElement.ownerDocument.defaultView.addEventListener(
             'resize', this._onresize_window);
         this.connected = true;
-    }
+    },
 
     /**
      * Detach the search engine integration. This is the opposite of `connect`.
      */
-    disconnect() {
+    disconnect: function() {
         if (this.element) {
             this.element.removeEventListener(
                 'dblclick', this._ondblclick_element, true);
@@ -376,7 +377,7 @@ class SearchEngineElement {
                 .removeEventListener('resize', this._onresize_window);
         }
         this.connected = false;
-    }
+    },
 
     /**
      * Update the current query. If the search term was changed, the cached
@@ -386,7 +387,7 @@ class SearchEngineElement {
      *
      * @param {RegExp} [searchterm]
      */
-    setQuery(searchterm = null) {
+    setQuery: function(searchterm = null) {
         let serialized = searchterm === null ? null : String(searchterm);
         if (serialized !== this.currentSearchTermSerialized) {
             this.currentSearchTermSerialized = serialized;
@@ -397,7 +398,7 @@ class SearchEngineElement {
             }
             this.hideCurrentResult();
         }
-    }
+    },
 
     /**
      * Start using the given element instead of the element that was passed on
@@ -413,7 +414,7 @@ class SearchEngineElement {
      * @param {HTMLElement} o.scrollableElement - The container that shows
      *    scroll bars when the content in `element` overflows.
      */
-    setElement({element, scrollableElement}) {
+    setElement: function({element, scrollableElement}) {
         this.element = element;
         this.scrollableElement = scrollableElement;
 
@@ -421,55 +422,55 @@ class SearchEngineElement {
             this._ensureSVGRoot();
             this.showVisibleHighlights();
         }
-    }
+    },
 
     /**
      * Search backwards for the query set in `setQuery` and render the result in
      * the element as set by `setElement`.
      */
-    findPrev() {
+    findPrev: function() {
         this._renderResult(this.logic.findPrev());
-    }
+    },
 
     /**
      * Search forwards for the query set in `setQuery` and render the result in
      * the element as set by `setElement`.
      */
-    findNext() {
+    findNext: function() {
         this._renderResult(this.logic.findNext());
-    }
+    },
 
     /**
      * Remove the marker of the current search result from the view.
      */
-    hideCurrentResult() {
+    hideCurrentResult: function() {
         if (this.svgRoot) {
             this.svgRoot.lastChild.textContent = '';
         }
         this.currentResult = null;
-    }
+    },
 
     /**
      * Stop highlighting all results and remove all existing highlights.
      */
-    unhighlightAll() {
+    unhighlightAll: function() {
         this.highlightedResults.clear();
         if (this.svgRoot) {
             this.svgRoot.firstChild.textContent = '';
         }
         this.isHighlighting = false;
-    }
+    },
 
     /**
      * Find all matches of the query set in `setQuery` and highlight all
      * matching results in the element as set by `setElement`.
      */
-    highlightAll() {
+    highlightAll: function() {
         this.isHighlighting = true;
         this.showVisibleHighlights();
-    }
+    },
 
-    getQueryStatus() {
+    getQueryStatus: function() {
         let resultTotal = this.logic.getMinimumResultCount();
         let isTotalDefinite = this.logic.hasFoundAllResults();
         return {
@@ -478,13 +479,13 @@ class SearchEngineElement {
             resultTotal,
             isTotalDefinite,
         };
-    }
+    },
 
     /**
      * Determine the approximate visible area and render all highlights in the
      * given area.
      */
-    showVisibleHighlights() {
+    showVisibleHighlights: function() {
         if (!this.isHighlighting) {
             this._renderCurrentResultIfNeeded();
             return;
@@ -504,9 +505,9 @@ class SearchEngineElement {
 
         this._renderBetweenLines(topLine, bottomLine);
         this._renderCurrentResultIfNeeded();
-    }
+    },
 
-    _renderCurrentResultIfNeeded() {
+    _renderCurrentResultIfNeeded: function() {
         if (!this.currentResult || !this.svgRoot || this.svgRoot.lastChild.childElementCount) {
             return;
         }
@@ -514,14 +515,14 @@ class SearchEngineElement {
         // _ensureSVGRoot has reset the displayed highlights. Show again.
         // There is a SVG element, a current result, but not rendered. Render it now.
         this._renderResult(this.currentResult);
-    }
+    },
 
     /**
      * Creates `this.svgRoot` if it did not exists, or if the dimensions have
      * changed (e.g. due to resize).
      * The DOM may be updated as a result.
      */
-    _ensureSVGRoot() {
+    _ensureSVGRoot: function() {
         let {width, height} = this.element.getBoundingClientRect();
         let wantsNewSVGRoot = !this.svgRoot ||
             // If the width changes, then the highlights have to be recalculated
@@ -544,22 +545,22 @@ class SearchEngineElement {
             this.element.parentNode.insertBefore(
                 this.svgRootWrapper, this.element);
         }
-    }
+    },
 
-    _removeSVGRoot() {
+    _removeSVGRoot: function() {
         if (this.svgRoot) {
             this.svgRootWrapper.remove();
             this.svgRootWrapper = null;
             this.svgRoot = null;
         }
-    }
+    },
 
     /**
      * Create a <svg> element for use in `this.svgRoot`, which has two children:
      * - `this.svgRoot.firstChild` will contain highlighted results.
      * - `this.svgRoot.lastChild` will contain one specific search result.
      */
-    _createSVGRoot(width, height) {
+    _createSVGRoot: function(width, height) {
         const NS_SVG = 'http://www.w3.org/2000/svg';
 
         let svg = document.createElementNS(NS_SVG, 'svg');
@@ -579,7 +580,7 @@ class SearchEngineElement {
         resultContainer.setAttribute('class', 'search-result-match');
         svg.appendChild(resultContainer);
         return svg;
-    }
+    },
 
     /**
      * Render highlighted results in the given line range (inclusive, 0-based).
@@ -588,7 +589,7 @@ class SearchEngineElement {
      * @param {number} lineEnd - End of range. Must be at least as high as
      *    `lineStart`, and no more than the number of '\n's in `this.text`.
      */
-    _renderBetweenLines(lineStart, lineEnd) {
+    _renderBetweenLines: function(lineStart, lineEnd) {
         // Initializes svgRoot and empties highlightedResults if needed
         this._ensureSVGRoot();
 
@@ -616,7 +617,7 @@ class SearchEngineElement {
                     this._getResultCoords(svgRect.left, svgRect.top, result)));
         }
         this.svgRoot.firstChild.appendChild(fragment);
-    }
+    },
 
     /**
      * Throttle a callback, to be used as an event handler.
@@ -624,7 +625,7 @@ class SearchEngineElement {
      * @param {function} callback - A method that is invoked on `this`.
      * @returns {function} A debounced version of the callback.
      */
-    _debounce(callback) {
+    _debounce: function(callback) {
         let didScheduleDispatch = false;
         return event => {
             if (didScheduleDispatch) {
@@ -642,12 +643,12 @@ class SearchEngineElement {
                 });
             }, 100);
         };
-    }
+    },
 
     /**
      * The handler for the 'dblclick' event on `this.element`.
      */
-    _ondblclick_element(event) {
+    _ondblclick_element: function(event) {
         let {target} = event;
         // Find the child element of this.element. Note that an element is
         // always found in this way, because the event is only dispatched on
@@ -658,26 +659,26 @@ class SearchEngineElement {
         let line = Array.prototype.indexOf.call(this.element.children, target);
         let column = 0;
         this.logic.setCurrentPosition(line, column);
-    }
+    },
 
     /**
      * The handler for a debounced 'scroll' event on `this.scrollableElement`.
      */
-    _onscroll_scrollableElement() {
+    _onscroll_scrollableElement: function() {
         this.showVisibleHighlights();
-    }
+    },
 
     /**
      * The handler for a debounced 'resize' event on `window`.
      */
-    _onresize_window() {
+    _onresize_window: function() {
         this.showVisibleHighlights();
-    }
+    },
 
     /**
      * Mark the given search result and scroll it into the view.
      */
-    _renderResult(result) {
+    _renderResult: function(result) {
         this.currentResult = result;
         if (!result) {
             this.hideCurrentResult();
@@ -705,7 +706,7 @@ class SearchEngineElement {
         }
         this.svgRoot.lastChild.textContent = '';
         this.svgRoot.lastChild.appendChild(svgPath);
-    }
+    },
 
     /**
      * Retrieve the text node at the given line that contains the column.
@@ -718,7 +719,7 @@ class SearchEngineElement {
      *   The text node satisfying the query (if any, otherwise null).
      *   The position inside the text node where the column starts.
      */
-    _getTextNodeAt(line, column) {
+    _getTextNodeAt: function(line, column) {
         let lineElement = this.element.children[line];
         let node = null;
         // 4 = NodeFilter.SHOW_TEXT
@@ -744,7 +745,7 @@ class SearchEngineElement {
         }
         // No node at all. Maybe the line is just empty.
         return [lineElement, null, 0];
-    }
+    },
 
     /**
      * Calculates a rectangle for the character at the given position.
@@ -754,7 +755,7 @@ class SearchEngineElement {
      *   the character at the given offset in the text node.
      *   (or, if there is no text, the left position of the line).
      */
-    _getNarrowRect(lineElement, textNode, offset) {
+    _getNarrowRect: function(lineElement, textNode, offset) {
         if (textNode) {
             // Most common case: text node found.
             // TODO: Re-use Range instead of creating it over and over again?
@@ -773,7 +774,7 @@ class SearchEngineElement {
             width: 0,
             height: rect.height
         };
-    }
+    },
 
     /**
      * Calculates the coordinates of the result, relative to (rootX, rootY).
@@ -788,7 +789,7 @@ class SearchEngineElement {
      *  - startRect: bounding box before the first text node in the result.
      *  - endRect: bounding box after the last text node in the result.
      */
-    _getResultCoords(rootX, rootY, result) {
+    _getResultCoords: function(rootX, rootY, result) {
         let [firstElem, firstNode, firstOffset] =
             this._getTextNodeAt(result.lineStart, result.columnStart);
         let [lastElem, lastNode, lastOffset] =
@@ -866,7 +867,7 @@ class SearchEngineElement {
         startRect = transformRect(startRect);
         endRect = transformRect(endRect);
         return {mainRect, startRect, endRect};
-    }
+    },
 
     /**
      * Generates the a path that draws an outline around the result in the DOM.
@@ -875,7 +876,7 @@ class SearchEngineElement {
      * @return {SVGPathElement} A SVG path relative to the upper-left corner of
      *   `this.svgRoot`.
      */
-    _createSVGPath({mainRect, startRect, endRect}) {
+    _createSVGPath: function({mainRect, startRect, endRect}) {
         // Now we determine the path around the selection.
         //
         //   -- -- AA

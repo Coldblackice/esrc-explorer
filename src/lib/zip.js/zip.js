@@ -1,4 +1,5 @@
 /*
+ Copyright (c) 2018 Off JustOff. All rights reserved.
  Copyright (c) 2013 Gildas Lormeau. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -175,15 +176,20 @@
 		}
 
 		function readUint8Array(index, length, callback, onerror) {
-			var reader = new FileReader();
-			reader.onload = function(e) {
-				callback(new Uint8Array(e.target.result));
-			};
-			reader.onerror = onerror;
 			try {
-				reader.readAsArrayBuffer(blobSlice(blob, index, length));
+				var reader = new FileReader();
+				reader.onload = function(e) {
+					callback(new Uint8Array(e.target.result));
+				};
+				reader.onerror = onerror;
+				try {
+					reader.readAsArrayBuffer(blobSlice(blob, index, length));
+				} catch (e) {
+					onerror(e);
+				}
 			} catch (e) {
-				onerror(e);
+				var reader = new FileReaderSync();
+				callback(new Uint8Array(reader.readAsArrayBuffer(blobSlice(blob, index, length))));
 			}
 		}
 

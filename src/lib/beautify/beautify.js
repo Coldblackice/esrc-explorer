@@ -1,4 +1,5 @@
 /**
+ * (c) 2018 Off JustOff <Off.Just.Off@gmail.com>
  * (c) 2013 Rob Wu <rob@robwu.nl>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -27,9 +28,11 @@ var beautify = (function(){
         // We don't use a dedicated worker because Chromium does not support
         // nested workers, and I also use this library in the main thread, so
         // a dedicated worker already exists in the main thread.
-        var messageChannel = new MessageChannel();
-        self.postMessage('PORT_BEAUTY', [messageChannel.port1]);
-        worker = messageChannel.port2;
+        try {
+            var messageChannel = new MessageChannel();
+            self.postMessage('PORT_BEAUTY', [messageChannel.port1]);
+            worker = messageChannel.port2;
+        } catch (e) {}
     }
     // This boolean is here in case the worker fails to load.
     // I generally expect the worker to have finished initializing before the
@@ -37,10 +40,12 @@ var beautify = (function(){
     var isWorkerAvailable = false;
     // Using worker.onmessage instead of addEventListener to make sure that
     // if "worker" is a MessagePort, that .start is then implicitly called here.
-    worker.onmessage = function() {
-        worker.onmessage = null;
-        isWorkerAvailable = true;
-    };
+    try {
+        worker.onmessage = function() {
+            worker.onmessage = null;
+            isWorkerAvailable = true;
+        };
+    } catch (e) {}
 
     var _messageID = 0;
     function beautify(options, callback) {
