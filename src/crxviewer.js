@@ -1,4 +1,5 @@
 /**
+ * (c) 2018 Off JustOff <Off.Just.Off@gmail.com>
  * (c) 2013 Rob Wu <rob@robwu.nl>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -1498,11 +1499,10 @@ function appendFileChooser() {
     progressDiv.insertAdjacentHTML('beforeend',
             '<br><br>' +
 //#if !WEB
-            'Visit the Chrome Web Store, Opera\'s or Firefox\'s add-on gallery<br>' +
-            'and click on the CRX button to view its source.' +
-            '<br><br>Or select a .crx/.nex/.xpi/.zip file:' +
+            '<br>Visit Chrome, Firefox, Opera, Pale Moon, SeaMonkey or Thunderbird add-on gallery<br>' +
+            '<br>or select a .xpi/.crx/.nex/.zip file:' +
 //#else
-            'Select a .crx/.nex/.xpi/.zip file:' +
+            'Select a .xpi/.crx/.nex/.zip file:' +
 //#endif
             '<br><br>');
     var fileChooser = document.createElement('input');

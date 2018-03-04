@@ -1,4 +1,5 @@
 /**
+ * (c) 2018 Off JustOff <Off.Just.Off@gmail.com>
  * (c) 2013 Rob Wu <rob@robwu.nl>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -25,7 +26,7 @@ var CRXtoZIP = (function() {
 
         // 43 72 32 34
         if (view[0] !== 67 || view[1] !== 114 || view[2] !== 50 || view[3] !== 52)
-            return errCallback('Invalid header: Does not start with Cr24.'), void 0;
+            return errCallback('Invalid header: Does not start with PK\\x03\\x04 or Cr24\n\n'), void 0;
 
         // 02 00 00 00
         if (view[4] !== 2 || view[5] || view[6] || view[7])

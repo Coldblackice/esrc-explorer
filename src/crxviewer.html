@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <!--
+ (c) 2018 Off JustOff <Off.Just.Off@gmail.com>
  (c) 2013 Rob Wu <rob@robwu.nl>
  This Source Code Form is subject to the terms of the Mozilla Public
  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -61,15 +62,14 @@ The filename filter is optional, '!search term' can also be used directly to sea
 </div>
 <div id="advanced-open">
     <form id="advanced-open-form">
-        Enter the URL of a Chrome Extension, Firefox addon, zip file,
-        or the page in the Chrome Web Store, Firefox addon gallery or Opera addon gallery.
-        <input type="url" placeholder="URL of Chrome extension, Firefox addon or zip file">
-        <input type="submit" value="Open in this viewer">
+        Enter the URL of the extension, zip file, or page from the Chrome, Firefox, Opera, SeaMonkey or Thunderbird add-on gallery:
+        <input type="url" placeholder="URL of Chrome, Firefox, Pale Moon, SeaMonkey, Thunderbird extension, zip file, or page from the supported add-on gallery">
+        <input type="submit" value="Open URL">
         or select a local file &rarr;
         <input type="file">
     </form>
     <form id="advanced-open-cws-extension">
-        <h3>Generate or modify URL of Chrome Web Store item</h3>
+        <br><br>Generate or modify URL of Chrome Web Store item:<br><br>
         <div title="Extension ID. This is the 32-character word in a Chrome Web Store URL">
             <span class="labeltext">Extension ID</span>
             <input type="text" pattern="[a-p]{32}" name="xid" placeholder="32-characters, a-p" required>
@@ -101,8 +101,8 @@ The filename filter is optional, '!search term' can also be used directly to sea
             <input type="text" pattern="[0-9]{1,5}(\.[0-9]{1,5}){3}" name="prodversion">
         </div>
         <div class="submit-if-valid" hidden>
-            <input type="submit" value="View extension source in this viewer">
-            <a href="">Link to listing in the Chrome web store</a>
+            <br><input type="submit" value="Explore source">&nbsp;
+            <a href="">View in store</a>
         </div>
     </form>
 </div>
