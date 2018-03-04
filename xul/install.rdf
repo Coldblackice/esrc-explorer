@@ -6,7 +6,7 @@
 	<em:type>2</em:type>
 	<em:bootstrap>true</em:bootstrap>
 	<em:name>Extension Source Explorer</em:name>
-	<em:description>Explore source code of various browsers add-ons using CRX Viewer engine</em:description>
+	<em:description>Explore source code of various browsers extensions using CRX Viewer engine</em:description>
 	<em:creator>Off JustOff &lt;Off.Just.Off@gmail.com&gt;</em:creator>
 	<em:developer>Rob Wu &lt;rob@robwu.nl&gt; (CRX Viewer)</em:developer>
 	<em:homepageURL>https://github.com/JustOff/esrc-explorer/</em:homepageURL>
