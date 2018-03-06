@@ -77,8 +77,13 @@ ESrcExplorer.prototype = {
   openExplorerOrSave: function(aUrl, aSave) {
     let crx_url, filename;
     if (apmo_pattern.test(aUrl)) {
-      crx_url = this.tabBrowser.getBrowserForTab(this.tabBrowser.selectedTab).
-                  contentDocument.getElementsByClassName("dllink_green")[0].href;
+      try {
+        crx_url = this.tabBrowser.getBrowserForTab(this.tabBrowser.selectedTab).
+                    contentDocument.getElementsByClassName("dllink_green")[0].href;
+      } catch(e) {
+        // We need a better way to find the latest version of extensions at apmo
+        return;
+      }
     } else if (apmo_download_pattern.test(aUrl)) {
       crx_url = aUrl;
     } else {
@@ -113,8 +118,9 @@ ESrcExplorer.prototype = {
 
   updateButton: function(aURI) {
     let isExtUrl = cws_pattern.test(aURI.spec) || ows_pattern.test(aURI.spec) ||
-                   amo_pattern.test(aURI.spec) || amo_file_version_pattern.test(aURI.spec) ||
-                   apmo_pattern.test(aURI.spec);
+                   amo_pattern.test(aURI.spec) || amo_file_version_pattern.test(aURI.spec);
+//                   We need a better way to find the latest version of extensions at apmo
+//                   apmo_pattern.test(aURI.spec);
     if (isExtUrl) {
       this.button.style.display = "block";
     } else {
