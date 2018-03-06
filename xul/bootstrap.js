@@ -80,10 +80,7 @@ ESrcExplorer.prototype = {
       try {
         crx_url = this.tabBrowser.getBrowserForTab(this.tabBrowser.selectedTab).
                     contentDocument.getElementsByClassName("dllink_green")[0].href;
-      } catch(e) {
-        // We need a better way to find the latest version of extensions at apmo
-        return;
-      }
+      } catch(e) {}
     } else if (apmo_download_pattern.test(aUrl)) {
       crx_url = aUrl;
     } else {
@@ -119,7 +116,6 @@ ESrcExplorer.prototype = {
   updateButton: function(aURI) {
     let isExtUrl = cws_pattern.test(aURI.spec) || ows_pattern.test(aURI.spec) ||
                    amo_pattern.test(aURI.spec) || amo_file_version_pattern.test(aURI.spec);
-//                   We need a better way to find the latest version of extensions at apmo
 //                   apmo_pattern.test(aURI.spec);
     if (isExtUrl) {
       this.button.style.display = "block";
@@ -190,7 +186,7 @@ ESrcExplorer.prototype = {
       '*://*/*.nex*', '*://*/*.NEX*',
       '*://*/*.xpi*', '*://*/*.XPI*',
       cws_match_pattern, ows_match_pattern,
-      amo_file_version_match_pattern, apmo_match_pattern,
+      amo_file_version_match_pattern, //apmo_match_pattern,
     ]);
     this.targetUrlMatchPatternAMO = new MatchPattern(amo_match_patterns);
     let cmenu = this.browserWindow.document.getElementById("contentAreaContextMenu");
