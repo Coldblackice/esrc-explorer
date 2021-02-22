@@ -1,5 +1,5 @@
 @echo off
-set VER=1.1.5
+set VER=1.1.6
 
 sed -i -b -E "s/version>.+?</version>%VER%</" xul\install.rdf
 sed -i -E "s/version>.+?</version>%VER%</; s/download\/.+?\/esrc-explorer-.+?\.xpi/download\/%VER%\/esrc-explorer-%VER%\.xpi/" update.xml
